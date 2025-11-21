@@ -91,4 +91,69 @@ def gera_dados_ficticios(num_registros = 600):
     # Retorna os dados no formato de DataFrame
     return pd.DataFrame(dados_vendas)
 
+# Gera os dados chamando a função definida acima
+df_vendas = gera_dados_ficticios(500)
 
+# Shape
+df_vendas.shape
+
+# Exibe as 5 primeiras linhas do DataFrame
+df_vendas.head()
+
+# Exibe as 5 últimas linhas do DataFrame
+df_vendas.tail()
+
+# Exibe informações gerais sobre o DataFrame (tipos de dados, valores não nulos)
+df_vendas.info()
+
+# Resumo estatístico
+df_vendas.describe()
+
+# Tipos de dados
+df_vendas.dtypes
+
+ #Se a coluna 'Data_Pedido' não estiver como tipo datetime, precisamos fazer a conversão explícita
+# A coluna pode ser usada para análise temporal
+df_vendas['Data_Pedido'] = pd.to_datetime(df_vendas['Data_Pedido'])
+
+# Engenharia de atributos
+# Criando a coluna 'Faturamento' (preço x quantidade)
+df_vendas['Faturamento'] = df_vendas['Preco_Unitario'] * df_vendas['Quantidade']
+
+# Engenharia de atributos
+# Usando uma função lambda para criar uma coluna de status de entrega
+df_vendas['Status_Entrega'] = df_vendas['Estado'].apply(lambda estado: 'Rápida' if estado in ['SP', 'RJ', 'MG'] else 'Normal')
+
+# Exibe informações gerais sobre o DataFrame (tipos de dados, valores não nulos)
+df_vendas.info()
+
+# Exibe as 5 primeiras linhas novamente para ver as novas colunas
+df_vendas.head()
+
+
+
+print("Quais os top 10 produtos mais vendidos?")
+
+# Agrupa por nome do produto, soma a quantidade e ordena para encontrar os mais vendidos
+top_10_produtos = df_vendas.groupby('Nome_Produto')['Quantidade'].sum().sort_values(ascending = False).head(10)
+
+# Exibe o resultado
+print(top_10_produtos)
+
+# Define um estilo para os gráficos
+sns.set_style("whitegrid")
+
+# Cria a figura e os eixos
+plt.figure(figsize = (12, 7))
+
+# Cria o gráfico de barras horizontais
+top_10_produtos.sort_values(ascending = True).plot(kind = 'barh', color = 'skyblue')
+
+# Adiciona títulos e labels
+plt.title('Top 10 Produtos Mais Vendidos', fontsize = 16)
+plt.xlabel('Quantidade Vendida', fontsize = 12)
+plt.ylabel('Produto', fontsize = 12)
+
+# Exibe o gráfico
+plt.tight_layout()
+plt.show()
