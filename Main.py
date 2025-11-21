@@ -250,3 +250,50 @@ plt.tight_layout()
 plt.show()
 
 """___________________________________________________________________________"""
+
+"""ANÁLISE DE VENDAS POR CATEGORIA DE PRODUTO"""
+
+# Agrupa por categoria, soma o faturamento e formata como moeda para melhor leitura
+faturamento_categoria = df_vendas.groupby('Categoria')['Faturamento'].sum().sort_values(ascending = False)
+
+# O .map('{:,.2f}'.format) é opcional, mas deixa a visualização do número mais clara
+faturamento_categoria.map('R$ {:,.2f}'.format)
+
+# Importa a função FuncFormatter para formatar os eixos
+from matplotlib.ticker import FuncFormatter
+
+# Ordena os dados para o gráfico ficar mais fácil de ler
+faturamento_ordenado = faturamento_categoria.sort_values(ascending = False)
+
+# Cria a Figura e os Eixos (ax) com plt.subplots()
+# Isso nos dá mais controle sobre os elementos do gráfico.
+fig, ax = plt.subplots(figsize = (12, 7))
+
+# Cria uma função para formatar os números
+# Esta função recebe um valor 'y' e o transforma em uma string no formato 'R$ XX K'
+def formatador_milhares(y, pos):
+    """Formata o valor em milhares (K) com o cifrão R$."""
+    return f'R$ {y/1000:,.0f}K'
+
+# Cria o objeto formatador
+formatter = FuncFormatter(formatador_milhares)
+
+# Aplica o formatador ao eixo Y (ax.yaxis)
+ax.yaxis.set_major_formatter(formatter)
+
+# Plota os dados usando o objeto 'ax'
+faturamento_ordenado.plot(kind = 'bar', ax = ax, color = sns.color_palette("viridis", len(faturamento_ordenado)))
+
+# Adiciona títulos e labels usando 'ax.set_...'
+ax.set_title('Faturamento Por Categoria', fontsize = 16)
+ax.set_xlabel('Categoria', fontsize = 12)
+ax.set_ylabel('Faturamento', fontsize = 12)
+
+# Ajusta a rotação dos rótulos do eixo X
+plt.xticks(rotation = 45, ha = 'right')
+
+# Garante que tudo fique bem ajustado na imagem final
+plt.tight_layout()
+
+# Exibe o gráfico
+plt.show()
