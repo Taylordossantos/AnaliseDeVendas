@@ -214,3 +214,39 @@ plt.tight_layout()
 # Exibe o gráfico
 plt.show()
 
+"""___________________________________________________________________________"""
+"""ANÁLISE DE VENDAS POR ESTADO"""
+
+# Agrupa por estado e soma o faturamento
+vendas_estado = df_vendas.groupby('Estado')['Faturamento'].sum().sort_values(ascending = False)
+
+vendas_estado.map('R$ {:,.2f}'.format)
+
+"""LINK PARA VER PALETAS DE CORES: https://seaborn.pydata.org/generated/seaborn.color_palette.html"""
+
+# Cria uma nova figura com tamanho de 12 por 7 polegadas
+plt.figure(figsize = (12, 7))
+
+# Plota os dados de faturamento por estado em formato de gráfico de barras
+# Usando a paleta de cores "rocket" do Seaborn
+vendas_estado.plot(kind = 'bar', color = sns.color_palette("husl", 7))
+
+# Define o título do gráfico com fonte de tamanho 16
+plt.title('Faturamento Por Estado', fontsize = 16)
+
+# Define o rótulo do eixo X
+plt.xlabel('Estado', fontsize = 12)
+
+# Define o rótulo do eixo Y
+plt.ylabel('Faturamento (R$)', fontsize = 12)
+
+# Mantém os rótulos do eixo X na horizontal (sem rotação)
+plt.xticks(rotation = 0)
+
+# Ajusta automaticamente os elementos do gráfico para evitar sobreposição
+plt.tight_layout()
+
+# Exibe o gráfico
+plt.show()
+
+"""___________________________________________________________________________"""
