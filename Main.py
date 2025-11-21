@@ -91,6 +91,9 @@ def gera_dados_ficticios(num_registros = 600):
     # Retorna os dados no formato de DataFrame
     return pd.DataFrame(dados_vendas)
 
+"""___________________________________________________________________________"""
+"""GERAR, CARREGAR E EXPLORAR OS DADOS"""
+
 # Gera os dados chamando a função definida acima
 df_vendas = gera_dados_ficticios(500)
 
@@ -112,6 +115,9 @@ df_vendas.describe()
 # Tipos de dados
 df_vendas.dtypes
 
+
+"""___________________________________________________________________________"""
+"""LIMPEZA, PRE-PROCESSAMENTO E ENGENHARIA DE ATRIBUTOS"""
  #Se a coluna 'Data_Pedido' não estiver como tipo datetime, precisamos fazer a conversão explícita
 # A coluna pode ser usada para análise temporal
 df_vendas['Data_Pedido'] = pd.to_datetime(df_vendas['Data_Pedido'])
@@ -131,6 +137,8 @@ df_vendas.info()
 df_vendas.head()
 
 
+"""___________________________________________________________________________"""
+"""ANÁLISE DOS TOP 10 PRODUTOS MAIS VENDIDOS"""
 
 print("Quais os top 10 produtos mais vendidos?")
 
@@ -157,3 +165,52 @@ plt.ylabel('Produto', fontsize = 12)
 # Exibe o gráfico
 plt.tight_layout()
 plt.show()
+
+""""""
+"""ANALISE DE FASTURAMENTO MENSAL"""
+
+df_vendas.head()
+
+# Cria uma coluna 'Mes' para facilitar o agrupamento mensal
+df_vendas['Mes'] = df_vendas['Data_Pedido'].dt.to_period('M')
+
+
+df_vendas.head()
+
+# Agrupa por mês e soma o faturamento
+faturamento_mensal = df_vendas.groupby('Mes')['Faturamento'].sum()
+
+# Converte o índice para string para facilitar a plotagem no gráfico
+faturamento_mensal.index = faturamento_mensal.index.strftime('%Y-%m')
+
+# Formata para duas casas decimais
+faturamento_mensal.map('R$ {:,.2f}'.format)
+
+
+# Cria uma nova figura com tamanho de 12 por 6 polegadas
+plt.figure(figsize = (12, 6))
+
+# Plota os dados de faturamento mensal em formato de linha
+faturamento_mensal.plot(kind = 'line', marker = 'o', linestyle = '-', color = 'green')
+
+# Define o título do gráfico com fonte de tamanho 16
+plt.title('Evolução do Faturamento Mensal', fontsize = 16)
+
+# Define o rótulo do eixo X
+plt.xlabel('Mês', fontsize = 12)
+
+# Define o rótulo do eixo Y
+plt.ylabel('Faturamento (R$)', fontsize = 12)
+
+# Rotaciona os valores do eixo X em 45 graus para melhor visualização
+plt.xticks(rotation = 45)
+
+# Adiciona uma grade com estilo tracejado e linhas finas
+plt.grid(True, which = 'both', linestyle = '--', linewidth = 0.5)
+
+# Ajusta automaticamente os elementos para evitar sobreposição
+plt.tight_layout()
+
+# Exibe o gráfico
+plt.show()
+
